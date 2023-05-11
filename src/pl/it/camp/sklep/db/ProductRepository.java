@@ -2,15 +2,26 @@ package pl.it.camp.sklep.db;
 
 import pl.it.camp.sklep.model.product.*;
 
-public class ProductRepository {
-    private Product[] products = new Product[5];
+import java.util.ArrayList;
+import java.util.List;
 
-    public ProductRepository() {
-        products[0] = new Computer("100", "Dell XPS", 4500.00, 5);
-        products[1] = new Monitor("101", "Iyama 27", 1200.00, 3);
-        products[2] = new Keyboard("102", "Logitech Z", 150.00, 8);
-        products[3] = new Mouse("103", "Microsoft X", 90.00, 7);
-        products[4] = new Printer("104", "Brother 375", 650.00, 4);
+public class ProductRepository {
+    private static final ProductRepository instance = new ProductRepository();
+
+    private final List<Product> products = new ArrayList<>();
+
+    private ProductRepository() {
+    }
+//    public ProductRepository() {
+////        products.add(new Computer("100", "Dell XPS", 4500.00, 5));
+////        products.add(new Monitor("101", "Iyama 27", 1200.00, 3));
+////        products.add(new Keyboard("102", "Logitech Z", 150.00, 8));
+////        products.add(new Mouse("103", "Microsoft X", 90.00, 7));
+////        products.add(new Printer("104", "Brother 375", 650.00, 4));
+//    }
+
+    public void addProduct(Product product) {
+        this.products.add(product);
     }
 
     public boolean supplyProduct(String code, int quantity) {
@@ -30,9 +41,7 @@ public class ProductRepository {
         }
         return false;
     }
-    public Product[] getProducts() {
-        return products;
-    }
+
     public Product findProductByCode(String code) {
         for (Product element : products) {
             if (element.getCode().equals(code)) {
@@ -40,5 +49,13 @@ public class ProductRepository {
             }
         }
         return null;
+    }
+
+    public List<Product> getProducts() {
+        return products;
+    }
+
+    public static ProductRepository getInstance() {
+        return instance;
     }
 }

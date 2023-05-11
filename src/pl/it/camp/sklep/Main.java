@@ -50,6 +50,6 @@ import pl.it.camp.sklep.Core.Core;
  */
 public class Main {
     public static void main(String[] args) {
-        Core.start();
+        Core.getInstance().start();
     }
 }

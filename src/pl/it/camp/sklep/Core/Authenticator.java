@@ -6,13 +6,18 @@ import pl.it.camp.sklep.gui.GUI;
 import pl.it.camp.sklep.model.user.User;
 
 public class Authenticator {
-    private static final UserRepository usersDatabase = new UserRepository();
+    private static final Authenticator instance = new Authenticator();
+    private static final UserRepository usersDatabase = UserRepository.getInstance();
+    public static final GUI gui = GUI.getInstance();
     private static final String seed = "&OY74PZHvIm!Y7K*0!jQWjbzjjIiFY0b";
 
-    public static User logIn() {
+    private Authenticator() {
+    }
+
+    public User logIn() {
         int counter = 0;
         while (counter < 3) {
-            User userFromGui = GUI.readLoginAndPassword();
+            User userFromGui = gui.readLoginAndPassword();
             User userFromDb = usersDatabase.findUserByLogin(userFromGui.getLogin());
 
             if (userFromDb != null
@@ -27,24 +32,24 @@ public class Authenticator {
         return null;
     }
 
-    public static void signIn() {
-        String login = GUI.readLogin();
+    public void signIn() {
+        String login = gui.readLogin();
         if (usersDatabase.findUserByLogin(login) != null) {
             System.out.println("Użytkownik o podanym loginie już istnieje");
             return;
         }
-        if (usersDatabase.addCustomer(login, Authenticator.hashPassword(GUI.readPassword()))) {
+        if (usersDatabase.addUser("Customer", login, hashPassword(gui.readPassword()))) {
             System.out.println("Użytkownik \"" + login + "\" został zarejestrowany i może się zalogować.");
         } else {
             System.out.println("Błąd przy rejestracji nowego użytkownika");
         }
     }
 
-    private static String hashPassword(String password) {
+    private String hashPassword(String password) {
         return DigestUtils.md5Hex(password + seed);
     }
 
-    public static UserRepository getUsersDatabase() {
-        return usersDatabase;
+    public static Authenticator getInstance() {
+        return instance;
     }
 }
